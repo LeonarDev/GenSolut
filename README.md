@@ -45,8 +45,10 @@ dotnet add Domain/Domain.csproj reference DataTransfer/DataTransfer.csproj
 dotnet add Domain/Domain.csproj reference Infrastructure/Infrastructure.csproj
 dotnet add Infrastructure/Infrastructure.csproj reference IOC/IOC.csproj
 
-# Configurar a classe Program.cs no projeto Api
-cat <<EOT > Api/Program.cs
+# Criar a estrutura e arquivos para a camada Api
+cd Api
+mkdir -p Controllers
+cat <<EOT > Program.cs
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -75,19 +77,19 @@ app.MapControllers();
 app.Run();
 EOT
 
-# Configurar o arquivo appsettings.json no projeto Api
-cat <<EOT > Api/appsettings.json
+cat <<EOT > appsettings.json
 {
   "ConnectionStrings": {
     "DefaultConnection": "YourConnectionStringHere"
   }
 }
 EOT
+cd ..
 
-# Criar a estrutura da camada Application
-mkdir -p Application/Services
-
-cat <<EOT > Application/Services/ApplicationService.cs
+# Criar a estrutura e arquivos para a camada Application
+cd Application
+mkdir -p Services
+cat <<EOT > Services/ApplicationService.cs
 namespace Application.Services
 {
     public class ApplicationService
@@ -96,11 +98,12 @@ namespace Application.Services
     }
 }
 EOT
+cd ..
 
-# Criar a estrutura da camada Domain
-mkdir -p Domain/Entities Domain/Repositories Domain/Services
-
-cat <<EOT > Domain/Entities/Entity.cs
+# Criar a estrutura e arquivos para a camada Domain
+cd Domain
+mkdir -p Entities Repositories Services
+cat <<EOT > Entities/Entity.cs
 namespace Domain.Entities
 {
     public class Entity
@@ -111,7 +114,7 @@ namespace Domain.Entities
 }
 EOT
 
-cat <<EOT > Domain/Repositories/IRepository.cs
+cat <<EOT > Repositories/IRepository.cs
 namespace Domain.Repositories
 {
     public interface IRepository<T>
@@ -125,7 +128,7 @@ namespace Domain.Repositories
 }
 EOT
 
-cat <<EOT > Domain/Services/DomainService.cs
+cat <<EOT > Services/DomainService.cs
 namespace Domain.Services
 {
     public class DomainService
@@ -134,11 +137,12 @@ namespace Domain.Services
     }
 }
 EOT
+cd ..
 
-# Criar a estrutura da camada DataTransfer
-mkdir -p DataTransfer/Requests DataTransfer/Responses
-
-cat <<EOT > DataTransfer/Requests/ExampleRequest.cs
+# Criar a estrutura e arquivos para a camada DataTransfer
+cd DataTransfer
+mkdir -p Requests Responses
+cat <<EOT > Requests/ExampleRequest.cs
 namespace DataTransfer.Requests
 {
     public class ExampleRequest
@@ -149,7 +153,7 @@ namespace DataTransfer.Requests
 }
 EOT
 
-cat <<EOT > DataTransfer/Responses/ExampleResponse.cs
+cat <<EOT > Responses/ExampleResponse.cs
 namespace DataTransfer.Responses
 {
     public class ExampleResponse
@@ -159,11 +163,12 @@ namespace DataTransfer.Responses
     }
 }
 EOT
+cd ..
 
-# Criar a estrutura da camada Infrastructure
-mkdir -p Infrastructure/Repositories Infrastructure/Data
-
-cat <<EOT > Infrastructure/Data/AppDbContext.cs
+# Criar a estrutura e arquivos para a camada Infrastructure
+cd Infrastructure
+mkdir -p Repositories Data
+cat <<EOT > Data/AppDbContext.cs
 using Microsoft.EntityFrameworkCore;
 using Domain.Entities;
 
@@ -184,7 +189,7 @@ namespace Infrastructure.Data
 }
 EOT
 
-cat <<EOT > Infrastructure/Repositories/Repository.cs
+cat <<EOT > Repositories/Repository.cs
 using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -233,7 +238,7 @@ namespace Infrastructure.Repositories
 }
 EOT
 
-cat <<EOT > Infrastructure/ServiceCollectionExtensions.cs
+cat <<EOT > ServiceCollectionExtensions.cs
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
@@ -255,15 +260,14 @@ namespace Infrastructure
     }
 }
 EOT
+cd ..
 
-# Criar a estrutura da camada IOC
-mkdir -p IOC
-
-cat <<EOT > IOC/ServiceCollectionExtensions.cs
+# Criar a estrutura e arquivos para a camada IOC
+cd IOC
+cat <<EOT > ServiceCollectionExtensions.cs
 using Microsoft.Extensions.DependencyInjection;
 using Application.Services;
 using Domain.Services;
-using Infrastructure.Repositories;
 
 namespace IOC
 {
@@ -282,6 +286,7 @@ namespace IOC
     }
 }
 EOT
+cd ..
 
 echo "Setup concluído com sucesso!"
 ```
